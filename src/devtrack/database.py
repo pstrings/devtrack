@@ -28,7 +28,7 @@ def create_tables():
 
 def select_tasks():
     with get_connection() as connection, connection.cursor() as cursor:
-        cursor.execute("SELECT id, title, status FROM tasks")
+        cursor.execute("SELECT id, title, status FROM tasks ORDER BY id")
         rows = cursor.fetchall()
 
         return rows
