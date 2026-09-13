@@ -54,3 +54,15 @@ def insert_task(title: str, status: str):
         connection.commit()
 
         return row
+
+
+def update_task(task_id: int, title: str, status: str):
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute(
+            "UPDATE tasks SET title=%s, status=%s WHERE id=%s RETURNING id, title, status", (title, status, task_id))
+
+        row = cursor.fetchone()
+
+        connection.commit()
+
+        return row
