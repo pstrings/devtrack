@@ -66,3 +66,15 @@ def update_task(task_id: int, title: str, status: str):
         connection.commit()
 
         return row
+
+
+def delete_task(task_id: int):
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute(
+            "DELETE FROM tasks WHERE id=%s RETURNING id, title, status", (task_id,))
+
+        row = cursor.fetchone()
+
+        connection.commit()
+
+        return row

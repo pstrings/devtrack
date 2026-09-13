@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .database import create_tables, insert_task, select_task, select_tasks, update_task
+from .database import create_tables, delete_task, insert_task, select_task, select_tasks, update_task
 
 
 class TaskCreate(BaseModel):
@@ -32,7 +32,7 @@ def home():
     }
 
 
-@app.get("/tasks")
+@app.get("/tasks", response_model=list[TaskResponse])
 def get_tasks():
     rows = select_tasks()
     return [
@@ -76,6 +76,23 @@ def create_task(task: TaskCreate):
 @app.put("/tasks/{task_id}", response_model=TaskResponse)
 def update_task_endpoint(task_id: int, task: TaskCreate):
     row = update_task(task_id, task.title, task.status)
+
+    if row is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found",
+        )
+
+    return {
+        "id": row[0],
+        "title": row[1],
+        "status": row[2],
+    }
+
+
+@app.delete("/tasks/{task_id}", response_model=TaskResponse)
+def remove_task(task_id: int):
+    row = delete_task(task_id)
 
     if row is None:
         raise HTTPException(
