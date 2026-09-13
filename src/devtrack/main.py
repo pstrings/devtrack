@@ -1,8 +1,20 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
-from .database import create_tables, select_tasks
+from .database import create_tables, insert_task, select_tasks
+
+
+class TaskCreate(BaseModel):
+    title: str
+    status: str
+
+
+class TaskResponse(BaseModel):
+    id: int
+    title: str
+    status: str
 
 
 @asynccontextmanager
@@ -31,3 +43,17 @@ def get_tasks():
         }
         for row in rows
     ]
+
+
+@app.post("/tasks", response_model=TaskResponse)
+def create_task(task: TaskCreate):
+    row = insert_task(task.title, task.status)
+
+    if row is None:
+        raise RuntimeError("Task was not created")
+
+    return {
+        "id": row[0],
+        "title": row[1],
+        "status": row[2],
+    }

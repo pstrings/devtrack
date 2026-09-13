@@ -32,3 +32,15 @@ def select_tasks():
         rows = cursor.fetchall()
 
         return rows
+
+
+def insert_task(title: str, status: str):
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO tasks (title, status) VALUES (%s, %s) RETURNING id, title, status", (title, status))
+
+        row = cursor.fetchone()
+
+        connection.commit()
+
+        return row
