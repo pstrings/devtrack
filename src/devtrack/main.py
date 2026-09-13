@@ -3,7 +3,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .database import create_tables, delete_task, insert_task, select_task, select_tasks, update_task
+from .database import (
+    create_tables,
+    delete_task,
+    insert_task,
+    select_task,
+    select_tasks,
+    update_task,
+)
 
 
 class TaskCreate(BaseModel):
