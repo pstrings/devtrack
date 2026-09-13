@@ -34,6 +34,16 @@ def select_tasks():
         return rows
 
 
+def select_task(task_id: int):
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT id, title, status FROM tasks WHERE id=%s", (task_id,))
+
+        row = cursor.fetchone()
+
+        return row
+
+
 def insert_task(title: str, status: str):
     with get_connection() as connection, connection.cursor() as cursor:
         cursor.execute(

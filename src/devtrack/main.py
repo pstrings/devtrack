@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .database import create_tables, insert_task, select_tasks
+from .database import create_tables, insert_task, select_task, select_tasks
 
 
 class TaskCreate(BaseModel):
@@ -43,6 +43,20 @@ def get_tasks():
         }
         for row in rows
     ]
+
+
+@app.get("/tasks/{task_id}", response_model=TaskResponse)
+def get_task(task_id: int):
+    row = select_task(task_id)
+
+    if row is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    return {
+        "id": row[0],
+        "title": row[1],
+        "status": row[2],
+    }
 
 
 @app.post("/tasks", response_model=TaskResponse)
