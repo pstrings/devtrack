@@ -35,7 +35,7 @@ app = FastAPI(lifespan=lifespan)
 @app.get("/")
 def home():
     return {
-        "message": "DevTrack API is running."
+        "message": "DevTrack API is running inside Docker!"
     }
 
 
