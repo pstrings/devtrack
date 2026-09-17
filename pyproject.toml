@@ -1,7 +1,7 @@
 [project]
 name = "devtrack"
 version = "0.1.0"
-description = "Add your description here"
+description = "Devtrack is an application to track dev tasks."
 readme = "README.md"
 authors = [
     { name = "pstrings", email = "masuya444@gmail.com" }
